@@ -98,12 +98,17 @@ def create_json_structure(filtered_df):
     # 處理 "外語" 替補邏輯，並確保排序
     for page_num, page_data in pages.items():
         if "Context_外語" in page_data:
-            external_elements = sorted(page_data["Context_外語"], key=lambda x: x["Name"])
+            external_elements = sorted(page_data["Context_外語"], key=lambda x: parse_name(x["Name"])[2])
             for key in list(page_data.keys()):
                 if key.startswith("Context_") and key != "Context_CN":
+                    page_data[key] = sorted(page_data[key], key=lambda x: parse_name(x["Name"])[2])
                     if len(page_data[key]) < len(page_data["Context_CN"]):
-                        page_data[key] = sorted(external_elements[:len(page_data["Context_CN"])] + page_data[key], key=lambda x: x["Name"])
+                        missing_count = len(page_data["Context_CN"]) - len(page_data[key])
+                        page_data[key].extend(external_elements[:missing_count])
+                                            # 再次排序，確保合併後仍然按照尾碼正序排列
+                    page_data[key] = sorted(page_data[key], key=lambda x: parse_name(x["Name"])[2])
             del page_data["Context_外語"]  # 刪除原始的 "Context_外語"
+
 
     result["Pages"] = list(pages.values())
     return result
