@@ -38,7 +38,7 @@ def parse_name(name):
 
 # 將語言碼轉換為網站語言
 def map_language_code(language):
-    lang_map = {"英": "EN", "越": "VN", "泰": "TH", "孟": "BD"}
+    lang_map = {"英": "EN", "越": "VN", "泰": "TH", "孟": "BD", "印": "IN"}
     return lang_map.get(language, None)
 
 def create_json_structure(filtered_df):
